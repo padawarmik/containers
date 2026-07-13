@@ -64,26 +64,41 @@ jobs:
           - component: sidecar
             dockerfile: Dockerfile.sidecar
     steps:
+      - name: Checkout image build repo
+        uses: actions/checkout@v5
+        with:
+          path: homelab-images
+
       - name: Checkout coom fork
         shell: bash
         run: |
-          git init .
-          git remote add origin "https://github.com/${FORK_REPOSITORY}.git"
-          git fetch --no-tags --depth=1 origin "${{ needs.resolve.outputs.fork_ref }}"
-          git checkout --detach FETCH_HEAD
+          git init source
+          git -C source remote add origin "https://github.com/${FORK_REPOSITORY}.git"
+          git -C source fetch --no-tags --depth=1 origin "${{ needs.resolve.outputs.fork_ref }}"
+          git -C source checkout --detach FETCH_HEAD
+
+      - name: Apply homelab patches
+        shell: bash
+        run: |
+          shopt -s nullglob
+          patches=(homelab-images/images/ts6-manager-coom/*.patch)
+          if (( ${#patches[@]} )); then
+            git -C source apply "${patches[@]/#/../}"
+          fi
 
       - name: Resolve image tags
         id: meta
         shell: bash
         run: |
-          sha="$(git rev-parse --short=12 HEAD)"
+          sha="$(git -C source rev-parse --short=12 HEAD)"
           date_tag="$(date -u +%Y%m%d)"
           ref_tag="$(printf '%s' '${{ needs.resolve.outputs.fork_ref }}' | tr '/:@ ' '----' | tr -cd 'A-Za-z0-9_.-')"
+          patch_tag="homelab1"
           {
             echo "sha=${sha}"
             echo "tags<<EOF"
-            echo "${{ needs.resolve.outputs.image }}:${{ matrix.component }}-${sha}"
-            echo "${{ needs.resolve.outputs.image }}:${{ matrix.component }}-${ref_tag}"
+            echo "${{ needs.resolve.outputs.image }}:${{ matrix.component }}-${sha}-${patch_tag}"
+            echo "${{ needs.resolve.outputs.image }}:${{ matrix.component }}-${ref_tag}-${patch_tag}"
             echo "${{ needs.resolve.outputs.image }}:${{ matrix.component }}-${date_tag}"
             echo "${{ needs.resolve.outputs.image }}:${{ matrix.component }}"
             echo "EOF"
@@ -102,8 +117,8 @@ jobs:
       - name: Build and publish ${{ matrix.component }}
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ${{ matrix.dockerfile }}
+          context: source
+          file: source/${{ matrix.dockerfile }}
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
