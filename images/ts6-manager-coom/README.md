@@ -21,12 +21,12 @@ ghcr.io/padawarmik/ts6-manager-coom:<component>-<utc-date-YYYYMMDD>
 ghcr.io/padawarmik/ts6-manager-coom:<component>
 ```
 
-For the current pinned ref `09573b64cadc`, the deployment should use immutable source SHA tags, e.g.:
+Expected tags for the pinned ref plus the homelab runtime patch:
 
 ```text
-ghcr.io/padawarmik/ts6-manager-coom:backend-09573b64cadc
-ghcr.io/padawarmik/ts6-manager-coom:frontend-09573b64cadc
-ghcr.io/padawarmik/ts6-manager-coom:sidecar-09573b64cadc
+ghcr.io/padawarmik/ts6-manager-coom:backend-09573b64cadc-homelab1
+ghcr.io/padawarmik/ts6-manager-coom:frontend-09573b64cadc-homelab1
+ghcr.io/padawarmik/ts6-manager-coom:sidecar-09573b64cadc-homelab1
 ```
 
 Use the floating `backend`/`frontend`/`sidecar` tags only for ad-hoc testing.

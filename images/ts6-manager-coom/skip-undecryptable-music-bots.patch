@@ -1,0 +1,26 @@
+diff --git a/packages/backend/src/voice/voice-bot-manager.ts b/packages/backend/src/voice/voice-bot-manager.ts
+index 0ebfcf8..48d285c 100644
+--- a/packages/backend/src/voice/voice-bot-manager.ts
++++ b/packages/backend/src/voice/voice-bot-manager.ts
+@@ -59,10 +59,17 @@ export class VoiceBotManager extends EventEmitter {
+     for (const dbBot of dbBots) {
+       let identity: IdentityData | undefined;
+       if (dbBot.identityData) {
+-        // H8: Decrypt identity data before parsing
+-        const parsed = JSON.parse(decrypt(dbBot.identityData));
+-        // Reconstruct KeyObjects from serialized scalar data
+-        identity = restoreIdentity(parsed);
++        try {
++          // H8: Decrypt identity data before parsing
++          const parsed = JSON.parse(decrypt(dbBot.identityData));
++          // Reconstruct KeyObjects from serialized scalar data
++          identity = restoreIdentity(parsed);
++        } catch (err) {
++          console.error(
++            `[VoiceBotManager] Skipping music bot ID ${dbBot.id}: unable to decrypt identity data (${(err as Error).message})`,
++          );
++          continue;
++        }
+       }
+       const config: VoiceBotConfig = {
+         id: dbBot.id,
