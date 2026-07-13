@@ -6,7 +6,7 @@ on:
       fork_ref:
         description: coom/ts6-manager git ref to build
         required: true
-        default: 09573b64cadc
+        default: 09573b64cadcf26786862fed2e24ad8641603ac1
   schedule:
     # Refresh weekly so the moving component tags pick up updated base images/yt-dlp.
     - cron: '17 4 * * 1'
@@ -26,7 +26,7 @@ concurrency:
 
 env:
   FORK_REPOSITORY: coom/ts6-manager
-  DEFAULT_FORK_REF: 09573b64cadc
+  DEFAULT_FORK_REF: 09573b64cadcf26786862fed2e24ad8641603ac1
   IMAGE_NAME: ts6-manager-coom
 
 jobs:
@@ -65,10 +65,12 @@ jobs:
             dockerfile: Dockerfile.sidecar
     steps:
       - name: Checkout coom fork
-        uses: actions/checkout@v5
-        with:
-          repository: ${{ env.FORK_REPOSITORY }}
-          ref: ${{ needs.resolve.outputs.fork_ref }}
+        shell: bash
+        run: |
+          git init .
+          git remote add origin "https://github.com/${FORK_REPOSITORY}.git"
+          git fetch --no-tags --depth=1 origin "${{ needs.resolve.outputs.fork_ref }}"
+          git checkout --detach FETCH_HEAD
 
       - name: Resolve image tags
         id: meta
