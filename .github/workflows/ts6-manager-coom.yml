@@ -6,7 +6,7 @@ on:
       fork_ref:
         description: coom/ts6-manager git ref to build
         required: true
-        default: 09573b64cadcf26786862fed2e24ad8641603ac1
+        default: 83a0635b37fbf0553a394e0b04e435dde117a20d
   schedule:
     # Refresh weekly so the moving component tags pick up updated base images/yt-dlp.
     - cron: '17 4 * * 1'
@@ -26,7 +26,7 @@ concurrency:
 
 env:
   FORK_REPOSITORY: coom/ts6-manager
-  DEFAULT_FORK_REF: 09573b64cadcf26786862fed2e24ad8641603ac1
+  DEFAULT_FORK_REF: 83a0635b37fbf0553a394e0b04e435dde117a20d
   IMAGE_NAME: ts6-manager-coom
 
 jobs:

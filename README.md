@@ -15,15 +15,15 @@ Workflow: `.github/workflows/ts6-manager-coom.yml`
 Default fork ref:
 
 ```text
-09573b64cadc
+83a0635b37fb
 ```
 
 Expected tags for the pinned ref plus the homelab runtime patch:
 
 ```text
-ghcr.io/padawarmik/ts6-manager-coom:backend-09573b64cadc-homelab1
-ghcr.io/padawarmik/ts6-manager-coom:frontend-09573b64cadc-homelab1
-ghcr.io/padawarmik/ts6-manager-coom:sidecar-09573b64cadc-homelab1
+ghcr.io/padawarmik/ts6-manager-coom:backend-83a0635b37fb-homelab1
+ghcr.io/padawarmik/ts6-manager-coom:frontend-83a0635b37fb-homelab1
+ghcr.io/padawarmik/ts6-manager-coom:sidecar-83a0635b37fb-homelab1
 ```
 
 The workflow also publishes moving convenience tags:
